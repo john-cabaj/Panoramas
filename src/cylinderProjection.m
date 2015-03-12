@@ -7,11 +7,11 @@ function cylImages = cylinderProjection(images, numImages, focalLength)
         x_c = size(image, 2) / 2;
         y_c = size(image, 1) / 2;
         
-        for x = 1 : size(image, 2)
-            for y = 1 : size(image, 1)
+        for x = 50 : size(image, 2)
+            for y = 102 : size(image, 1)
                 x_b = focalLength * atan((x - x_c) / focalLength) + x_c;
                 y_b = focalLength * (y - y_c) / sqrt((x - x_c)^2 + focalLength^2) + y_c;
-               
+                
                 cylImages(round(y_b),round(x_b),:,i) = image(y,x,:);
             end
         end
