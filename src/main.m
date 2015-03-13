@@ -15,7 +15,9 @@ function main()
 
     cylImages = cylinderProjection(images, numImages, 595);
     
-    [image, descrips, locs] = sift(cylImages(:,:,:,1));
-    showkeys(image, locs);
+%     [image, descrips, locs] = sift(cylImages(:,:,:,1));
+%     showkeys(image, locs);
+    
+    match(cylImages(:,:,:,1), cylImages(:,:,:,2));
 end
 
