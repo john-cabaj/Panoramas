@@ -15,9 +15,7 @@ function main()
 
     cylImages = cylinderProjection(images, numImages, 595);
     
-    for i = 1: 1
-        figure, imshow(cylImages(:,:,:,i));
-    end
-    
+    [image, descrips, locs] = sift(cylImages(:,:,:,1));
+    showkeys(image, locs);
 end
 
