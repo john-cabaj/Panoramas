@@ -37,6 +37,37 @@ for i = 1 : size(des1,1)
    end
 end
 
+nonZeroIndices = find(match);
+ransac_pairs(:,1) = nonZeroIndices;
+ransac_pairs(:,2) = match(nonZeroIndices);
+p1 = zeros(4,2);
+p2 = zeros(4,2);
+
+for i = 1 : 100
+   samples = randsample(nonZeroIndices, 4);
+   sample = samples(1);
+   p1(1,:) = [loc1(sample,2),loc1(sample,1)];
+   p2(1,:) = [loc2(match(sample),2),loc2(match(sample),1)];
+   sample = samples(2);
+   p1(2,:) = [loc1(sample,2),loc1(sample,1)];
+   p2(2,:) = [loc2(match(sample),2),loc2(match(sample),1)];
+   sample = samples(3);
+   p1(3,:) = [loc1(sample,2),loc1(sample,1)];
+   p2(3,:) = [loc2(match(sample),2),loc2(match(sample),1)];
+   sample = samples(4);
+   p1(4,:) = [loc1(sample,2),loc1(sample,1)];
+   p2(4,:) = [loc2(match(sample),2),loc2(match(sample),1)];
+   
+   H = homography(p1,p2);
+end
+
+
+
+
+
+
+
+
 % Create a new image showing the two images side by side.
 im3 = appendimages(im1,im2);
 
