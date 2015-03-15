@@ -37,14 +37,16 @@ for i = 1 : size(des1,1)
    end
 end
 
-nonZeroIndices = find(match);
-ransac_pairs(:,1) = nonZeroIndices;
-ransac_pairs(:,2) = match(nonZeroIndices);
-p1 = zeros(4,2);
-p2 = zeros(4,2);
+non_zero_indices = find(match);
+max_c = 0;
+max_inlier_points = zeros(1,2);
+max_inlier_projs = zeros(1,2);
 
 for i = 1 : 100
-   samples = randsample(nonZeroIndices, 4);
+   p1 = zeros(4,2);
+   p2 = zeros(4,2);
+    
+   samples = randsample(non_zero_indices, 4);
    sample = samples(1);
    p1(1,:) = [loc1(sample,2),loc1(sample,1)];
    p2(1,:) = [loc2(match(sample),2),loc2(match(sample),1)];
@@ -59,9 +61,44 @@ for i = 1 : 100
    p2(4,:) = [loc2(match(sample),2),loc2(match(sample),1)];
    
    H = homography(p1,p2);
+   c = 0;
+   inlier_points = zeros(1,2);
+   inlier_projs = zeros(1,2);
+   inlier_point = zeros(3,1);
+   inlier_proj = zeros(3,1);
+   
+   for j = 1 : size(non_zero_indices, 2)
+        
+       if(ismember(non_zero_indices(j),samples) == 0)
+           inlier_point(:,1) = [loc1(non_zero_indices(j),2),loc1(non_zero_indices(j),1),1];
+           inlier_proj(:,1) = [loc2(match(non_zero_indices(j)),2),loc2(match(non_zero_indices(j)),1),1];
+      
+           proj = H*inlier_point;
+           ssd = (inlier_proj(1) - proj(1))^2 + (inlier_proj(2) - proj(2))^2;
+           
+           if(ssd < 100)  
+               c = c+1;
+               if(c == 1)
+                    inlier_points(1,:) = inlier_point(1:2,1);
+                    inlier_projs(1,:) = inlier_proj(1:2,1);
+               else
+                   new_row = [inlier_point(1,1),inlier_point(2,1)];
+                   inlier_points = [inlier_points; new_row];
+                   new_row = [inlier_proj(1,1),inlier_proj(2,1)];
+                   inlier_projs = [inlier_projs; new_row];
+               end
+           end
+       end
+   end
+   
+   if(c > max_c)
+      max_c = c;
+      max_inlier_points = inlier_points;
+      max_inlier_projs = inlier_projs;
+   end
 end
 
-
+H = homography(max_inlier_points,max_inlier_projs);
 
 
 
