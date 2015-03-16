@@ -1,4 +1,4 @@
-function H = calcH(p1, p2)
+function H = homography(p1, p2)
 % Assume we have two images called '1' and '2'
 % p1 is an n x 2 matrix containing n feature points, where each row
 % holds the coordinates of a feature point in image '1'
@@ -14,14 +14,28 @@ if n < 4
  error('Not enough points');
 end
 
-A = zeros(n*3,9);
-b = zeros(n*3,1);
+% A = zeros(n*3,9);
+% b = zeros(n*3,1);
+% for i=1:n
+%  A(3*(i-1)+1,1:3) = [p2(i,:),1];
+%  A(3*(i-1)+2,4:6) = [p2(i,:),1];
+%  A(3*(i-1)+3,7:9) = [p2(i,:),1];
+%  b(3*(i-1)+1:3*(i-1)+3) = [p1(i,:),1];
+% end
+% 
+% x = (A\b)';
+% H = [x(1:3); x(4:6); x(7:9)];
+
+A = zeros(n*2,8);
+b = zeros(n*2,1);
 for i=1:n
- A(3*(i-1)+1,1:3) = [p2(i,:),1];
- A(3*(i-1)+2,4:6) = [p2(i,:),1];
- A(3*(i-1)+3,7:9) = [p2(i,:),1];
- b(3*(i-1)+1:3*(i-1)+3) = [p1(i,:),1];
+ A(2*(i-1)+1,1:3) = [p1(i,:),1];
+ A(2*(i-1)+1,7:8) = [-p1(i,1)*p2(i,1),-p1(i,2)*p2(i,1)];
+ A(2*(i-1)+2,4:6) = [p1(i,:),1];
+ A(2*(i-1)+2,7:8) = [-p1(i,1)*p2(i,2),-p1(i,2)*p2(i,2)];
+ b(2*(i-1)+1:2*(i-1)+2) = p2(i,:);
 end
 
 x = (A\b)';
-H = [x(1:3); x(4:6); x(7:9)];
+H = [x(1:3); x(4:6); [x(7:8),1]];
+

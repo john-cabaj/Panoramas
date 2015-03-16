@@ -15,6 +15,6 @@ function main()
 
     cylImages = cylinderProjection(images, numImages, 595);
     
-    match(cylImages(:,:,:,1), cylImages(:,:,:,2), 4, 100);
+    match(cylImages(:,:,:,11), cylImages(:,:,:,10), 4, 100);
 end
 
