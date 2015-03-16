@@ -8,7 +8,7 @@
 %
 % Example: match('scene.pgm','book.pgm');
 
-function num = match(image1, image2, sample_num, k)
+function H = match(image1, image2, sample_num, k)
 
 % Find SIFT keypoints for each image
 [im1, des1, loc1] = sift(image1);
@@ -90,22 +90,22 @@ end
 
 H = homography(max_inlier_points,max_inlier_projs);
 
-% Create a new image showing the two images side by side.
-im3 = appendimages(im1,im2);
-
-% Show a figure with lines joining the accepted matches.
-figure('Position', [100 100 size(im3,2) size(im3,1)]);
-colormap('gray');
-imagesc(im3);
-hold on;
-cols1 = size(im1,2);cols1 = size(im1,2);
-for i = 1: size(max_inlier_points,1)
-    line([max_inlier_points(i,1) max_inlier_projs(i,1)+cols1], ...
-         [max_inlier_points(i,2) max_inlier_projs(i,2)], 'Color', 'c');
-end
-hold off;
-num = sum(match > 0);
-fprintf('Found %d matches.\n', num);
+% % Create a new image showing the two images side by side.
+% im3 = appendimages(im1,im2);
+% 
+% % Show a figure with lines joining the accepted matches.
+% figure('Position', [100 100 size(im3,2) size(im3,1)]);
+% colormap('gray');
+% imagesc(im3);
+% hold on;
+% cols1 = size(im1,2);cols1 = size(im1,2);
+% for i = 1: size(max_inlier_points,1)
+%     line([max_inlier_points(i,1) max_inlier_projs(i,1)+cols1], ...
+%          [max_inlier_points(i,2) max_inlier_projs(i,2)], 'Color', 'c');
+% end
+% hold off;
+% num = sum(match > 0);
+fprintf('Found %d matches.\n', max_c);
 
 
 
