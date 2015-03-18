@@ -3,7 +3,7 @@ CS 766 panorama project
 
 ## Introduction
 The panorama project was started with the goal of realizing an implementation of panorama mosaics using a multitude of images. Using images resulting from a rotation of the camera about the camera's optical center, a larger image providing a much fuller field of view can be realized. The project was done in a Matlab environment to ease implementation in feature matching. The program can be run by issuing the following command:
-* **main(directory, focal length, sampling intervals)** where "directory" is the directory containing the image, "focal length" is the focal length of the camera used in obtaining the images, and "k" is the number of iterations that RANSAC is sampling
+* **main(directory, focal length, sampling intervals)** where "directory" is the directory containing the images, "focal length" is the focal length of the camera used in obtaining the images, and "k" is the number of iterations that RANSAC is sampling
 
 ## Implementation Details
 To use the program, a directory is provided along with several other parameters to be described later. All images from the directory are loaded with the assumption that the images are in left-right order - that is, the images were taken with the first image being the leftmost of the resulting panorama.
