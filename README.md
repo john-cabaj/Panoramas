@@ -23,8 +23,4 @@ In order to ensure smooth transitions between images, a feathering blending func
 
 
 ## Libraries and Acknowledgments
-* [Paul E. Debevec and Jitendra Malik - Recovering High Dynamic Range Radiance Maps from Photographs](http://www.pauldebevec.com/Research/HDR/debevec-siggraph97.pdf)
-* [Lumia Imaging SDK](http://developer.nokia.com/lumia/nokia-apis/imaging)
-* [Math.NET Numerics] (http://numerics.mathdotnet.com/)
-* [ExifLib](http://www.codeproject.com/Articles/36342/ExifLib-A-Fast-Exif-Data-Extractor-for-NET)
-* [RGBE Image Format Specifications](http://www.graphics.cornell.edu/online/formats/rgbe/)
+* [David Lowe SIFT Library](http://www.cs.ubc.ca/~lowe/keypoints/)
