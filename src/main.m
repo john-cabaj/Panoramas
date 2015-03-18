@@ -1,6 +1,6 @@
 function main()
 
-    srcImagesFolder = '..\..\testingImages\'; 
+    srcImagesFolder = '..\..\engineeringHall\'; 
     srcImagesFiles = dir(strcat(srcImagesFolder, '*.jpg'));
     imageNames = {srcImagesFiles.name};
     numImages = numel(imageNames);
@@ -12,7 +12,7 @@ function main()
         images(:,:,:,i) = imread(strcat(srcImagesFolder, srcImagesFiles(i).name));
     end
     
-    cylImages = cylinderProjection(images, numImages, 595);
+    cylImages = cylinderProjection(images, numImages, 682.05069);
     
     offsets = zeros(1,2);
     x_ranges = ones(1,2);
@@ -46,78 +46,56 @@ function main()
     y_ranges(1,2) = y_ranges(1,1) + size(image,1) - 1;
     
     for i = 2 : size(offsets,1)
-       y_ranges(i,1) = y_ranges(i-1,1) + round(offsets(i,2)); 
+       y_ranges(i,1) = y_ranges(i-1,1) - 1 + round(offsets(i,2)); 
        y_ranges(i,2) = y_ranges(i,1) + size(image,1) - 1; 
     end
     
-    prev_x = 0;
-    
-    for i = 1 : numImages - 1
-        image1 = cylImages(:,:,:,i);
-        image2 = cylImages(:,:,:,i+1);
-        
-%         for x = x_ranges(i,1) : x_ranges(i,2)
-%            for y = y_ranges(i,1) : y_ranges(i,2)
-%                 panorama(y,x,:) = image(y - y_ranges(i,1) + 1,x - x_ranges(i,1) + 1,:);
-%            end
-%         end
-
-        for x = 1 + abs(round(offsets(i,1))) : size(image1,2) - abs(round(offsets(i+1,1)))
-           for y = 1 : size(image1,1)
-                panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,:) = image1(y,x,:);
-           end
+    image = cylImages(:,:,:,1);
+    for x = 1 : size(image,2)
+        for y = 1 : size(image,1)
+           panorama(y_ranges(1,1)+y,x_ranges(1,1)+x,:) = image(y,x,:); 
         end
+    end
+    
+    
+    for i = 2 : numImages
+        image = cylImages(:,:,:,i); 
         
-        prev_x = x;
-        
-        if(y_ranges(i,1) < y_ranges(i+1,1))
-            for x = prev_x + 1 : size(image1,2)
-               for y = 1 : y_ranges(i+1,2)
-                    overlap = abs(round(offsets(i+1,1)));
-                    distance1 = abs(x - prev_x - 1);
-                    distance2 = abs(size(image1,2) - x + 1);
+        for x = 1 : size(image,2)
+            for y = 1 : size(image,1)
+                if(x < abs(round(offsets(i,1))))
+                    weight1 = weight(panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,:));
+                    weight2 = weight(image(y,x,:));
+                    overlap = abs(round(offsets(i,1)));
+                    distance1 = x;
+                    distance2 = abs(overlap - x);
                     alpha1 = (overlap - distance1) / overlap;
                     alpha2 = (overlap - distance2) / overlap;
-                    if(y < y_ranges(i+1,1))
-                        weight1 = 1;
-                        alpha1 = 1;
-                        panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,1) = weight1*alpha1*image1(y,x,1);
-                        panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,2) = weight1*alpha1*image1(y,x,2);
-                        panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,3) = weight1*alpha1*image1(y,x,3);
-                    elseif(y > size(image1,1))
-                        weight2 = 1;
-                        alpha2 = 1;
-                        panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,1) = weight2*alpha2*image2(y-y_ranges(i+1,1)+1,x-prev_x+1,1);
-                        panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,2) = weight2*alpha2*image2(y-y_ranges(i+1,1)+1,x-prev_x+1,2);
-                        panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,3) = weight2*alpha2*image2(y-y_ranges(i+1,1)+1,x-prev_x+1,3);
+                    
+                    if(weight1 ~= 0 && weight2 ~= 0)
+                        panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,1) = alpha1 * panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,1) ...
+                            + alpha2 * image(y,x,1);
+                        panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,2) = alpha1 * panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,2) ...
+                            + alpha2 * image(y,x,2);
+                        panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,3) = alpha1 * panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,3) ...
+                            + alpha2 * image(y,x,3);
+                    elseif(weight1 ~= 0)
+                        panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,1) = panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,1);
+                        panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,2) = panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,2);
+                        panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,3) = panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,3);
+                    elseif(weight2 ~= 0)
+                        panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,1) = image(y,x,1);
+                        panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,2) = image(y,x,2);
+                        panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,3) = image(y,x,3);
                     else
-                        weight1 = weight(image1(y,x,:));
-                        weight2 = weight(image2(y-y_ranges(i+1,1)+1,x-prev_x+1,:));
-                        if(weight1 ~= 0 && weight2 ~= 0)
-                            panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,1) = alpha1*image1(y,x,1) ...
-                                + alpha2*image2(y-y_ranges(i+1,1)+1,x-prev_x+1,1);
-                            panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,2) = alpha1*image1(y,x,2) ...
-                                + alpha2*image2(y-y_ranges(i+1,1)+1,x-prev_x+1,2);
-                            panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,3) = alpha1*image1(y,x,3) ...
-                                + alpha2*image2(y-y_ranges(i+1,1)+1,x-prev_x+1,3);
-                        elseif(weight1 ~= 0)
-                            panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,1) = image1(y,x,1);
-                            panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,2) = image1(y,x,2);
-                            panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,3) = image1(y,x,3);
-                        elseif(weight2 ~= 0)
-                            panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,1) = image2(y-y_ranges(i+1,1)+1,x-prev_x+1,1);
-                            panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,2) = image2(y-y_ranges(i+1,1)+1,x-prev_x+1,2);
-                            panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,3) = image2(y-y_ranges(i+1,1)+1,x-prev_x+1,3);
-                        else
-                            panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,1) = 0;
-                            panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,2) = 0;
-                            panorama(y_ranges(i,1)+y-1,x_ranges(i,1)+x-1,3) = 0;
-                        end
+                        panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,1) = 0;
+                        panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,2) = 0;
+                        panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,3) = 0;
                     end
-               end
+                else
+                    panorama(y_ranges(i,1)+y,x_ranges(i,1)+x,:) = image(y,x,:); 
+                end
             end
-        else
-            
         end
     end
     
