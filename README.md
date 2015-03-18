@@ -29,5 +29,12 @@ Test images with drift
 
 Test images without drift
 ![alt text](images/test_images_no_drift.jpg)
+
+Building with drift
+![alt text](images/building_drift.jpg)
+
+Building without drift
+![alt text](images/building_no_drift.jpg)
+
 ## Libraries and Acknowledgments
 * [David Lowe SIFT Library](http://www.cs.ubc.ca/~lowe/keypoints/)
