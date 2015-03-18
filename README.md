@@ -22,6 +22,7 @@ RANSAC works by sampling 4 potential matches and computing the homography betwee
 ### Stitching and Blending
 Once the homographies between each image are known, we now know the displacements of each image relative to its neighbor. The images are then stitched together one at a time, while each image is displaced the computed amount. 
 In order to ensure smooth transitions between images, a feathering blending function is used in the regions where two pictures overlap. The feathering function works by first identifying the overlapped range. Once the range is determined, pixels in the overlap range are weighted based on their relative location to the border of the overlap. For instance, pixels closest to the left edge of the overlap will be heavily weighted in the pixel value of the left image, while pixels on the right edge of the overlap are proportionally weighted for the right image's pixel.
+After feathering was done, the image was corrected for drift. Panorama images tend to have a downwards drift that accumulates as you stitch images and can be significant by the time your stitching is complete. A simple linear transformation of the form y' = y + ax was used to realign the first and last images to obtain the *a* value. Once this was known, the image with drift was remapped to remove the drift. The additional space at the bottom of the image was also cropped out as well yielding an straightened image.
 
 ## Results
 Test images with drift
