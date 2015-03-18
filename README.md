@@ -23,6 +23,11 @@ RANSAC works by sampling 4 potential matches and computing the homography betwee
 Once the homographies between each image are known, we now know the displacements of each image relative to its neighbor. The images are then stitched together one at a time, while each image is displaced the computed amount. 
 In order to ensure smooth transitions between images, a feathering blending function is used in the regions where two pictures overlap. The feathering function works by first identifying the overlapped range. Once the range is determined, pixels in the overlap range are weighted based on their relative location to the border of the overlap. For instance, pixels closest to the left edge of the overlap will be heavily weighted in the pixel value of the left image, while pixels on the right edge of the overlap are proportionally weighted for the right image's pixel.
 
+## Results
+Test images with drift
+![alt text](images/test_images_drift.jpg)
 
+Test images without drift
+![alt text](images/test_images_no_drift.jpg)
 ## Libraries and Acknowledgments
 * [David Lowe SIFT Library](http://www.cs.ubc.ca/~lowe/keypoints/)
