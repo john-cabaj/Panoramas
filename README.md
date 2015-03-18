@@ -8,7 +8,9 @@ The panorama project was started with the goal of realizing an implementation of
 To use the program, a directory is provided along with several other parameters to be described later. All images from the directory are loaded with the assumption that the images are in left-right order - that is, the images were taken with the first image being the leftmost of the resulting panorama.
 
 ### Cylindrical Projection
-To avoid using a reference image during the panorama generation, a cylindrical projection was used to convert images into a representation on a cylinder. In addition, the use of cylindrical projections means that the shift from image to image is purely translational, and full homography image warps aren't necessary.
+To avoid using a reference image during the panorama generation, a cylindrical projection was used to convert images into a representation on a cylinder. In addition, the use of cylindrical projections means that the shift from image to image is purely translational, and full homography image warps aren't necessary. This is accomplished via the following equations:
+* x_b = focalLength * atan((x - x_c) / focalLength) + x_c;
+* y_b = focalLength * (y - y_c) / sqrt((x - x_c)^2 + focalLength^2) + y_c;
 
 ### Feature Matching
 The first step of peforming mosaics is to identify common features between adjacent images. For this implementation, SIFT features were used thanks to a nice [library](http://www.cs.ubc.ca/~lowe/keypoints/) from Professor David Lowe. Also included was a matching library that yields potential matches between the SIFT features. However, the features can contain several outliers. For this reason, the RANSAC algorithm was used.
