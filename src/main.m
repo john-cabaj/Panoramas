@@ -1,7 +1,7 @@
-function main()
+function main(directory, f, k)
 
-    srcImagesFolder = '..\..\engineeringHall\'; 
-    srcImagesFiles = dir(strcat(srcImagesFolder, '*.jpg'));
+    srcImagesFolder = directory; 
+    srcImagesFiles = dir(strcat(directory, '*.jpg'));
     imageNames = {srcImagesFiles.name};
     numImages = numel(imageNames);
     image = imread(strcat(srcImagesFolder, srcImagesFiles(1).name));
@@ -11,8 +11,10 @@ function main()
     for i = 1 : numImages
         images(:,:,:,i) = imread(strcat(srcImagesFolder, srcImagesFiles(i).name));
     end
-    
-    cylImages = cylinderProjection(images, numImages, 682.05069);
+     
+%     numImages = numImages + 1;
+%     images(:,:,:,numImages) = images(:,:,:,1);
+    cylImages = cylinderProjection(images, numImages, f);
     
     offsets = zeros(1,2);
     x_ranges = ones(1,2);
@@ -23,7 +25,7 @@ function main()
     down_growth = 0;
     
     for i = 1 : numImages - 1
-        H = match(cylImages(:,:,:,i), cylImages(:,:,:,i+1), 4, 1000);
+        H = match(cylImages(:,:,:,i), cylImages(:,:,:,i+1), 4, k);
         
         offsets(i+1,:) = [H(1,3), H(2,3)];
         x_ranges(i,2) = x_offset_total + size(image, 2) + round(offsets(i+1,1));
@@ -56,7 +58,6 @@ function main()
            panorama(y_ranges(1,1)+y,x_ranges(1,1)+x,:) = image(y,x,:); 
         end
     end
-    
     
     for i = 2 : numImages
         image = cylImages(:,:,:,i); 
@@ -100,5 +101,23 @@ function main()
     end
     
     figure, imshow(panorama);
+    
+    drift_panorama = uint8(zeros(size(panorama,1),size(panorama,2),3));
+%     bottom_index = size(drift_panorama,1);
+%     first_image_index = bottom_index - size(image,1);
+    a = (y_ranges(1,1) - y_ranges(numImages,1)) / x_ranges(numImages,1);
+    
+    for x = 1 : size(drift_panorama,2)
+        for y = 1 : size(drift_panorama,1)
+            y_p = round(y + a * x);
+            
+            if(y_p > 0 && y_p <= size(panorama,2))
+                drift_panorama(y_p,x,:) = panorama(y,x,:);
+            end
+        end
+    end
+    
+    final_image = drift_panorama(1:512,:,:);
+    figure, imshow(final_image);
 end
 

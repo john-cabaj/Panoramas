@@ -46,7 +46,7 @@ for i = 1 : k
    p1 = zeros(1,2);
    p2 = zeros(1,2);
     
-   samples = datasample(non_zero_indices, sample_num, 'Replace', false);
+   samples = randsample(non_zero_indices, sample_num);
    
    for j = 1 : sample_num
         p1(j,:) = [loc1(samples(j),2),loc1(samples(j),1)];
@@ -67,7 +67,7 @@ for i = 1 : k
            proj = H*inlier_point;
            ssd = (inlier_proj(1) - proj(1))^2 + (inlier_proj(2) - proj(2))^2;
           
-           if(ssd < 10)  
+           if(ssd < 0.6)  
                c = c+1;
                if(c == 1)
                     inlier_points(1,:) = inlier_point(1:2,1);
