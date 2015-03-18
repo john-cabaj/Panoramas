@@ -29,16 +29,16 @@ In order to ensure smooth transitions between images, a feathering blending func
 After feathering was done, the image was corrected for drift. Panorama images tend to have a downwards drift that accumulates as you stitch images and can be significant by the time your stitching is complete. A simple linear transformation of the form y' = y + ax was used to realign the first and last images to obtain the *a* value. Once this was known, the image with drift was remapped to remove the drift. The additional space at the bottom of the image was also cropped out as well yielding an straightened image.
 
 ## Results
-Test images with drift
+[Test images with drift](http://i.imgur.com/NvafBTE.jpg)
 ![alt text](images/test_images_drift.jpg)
 
-Test images without drift
+[Test images without drift](http://i.imgur.com/GirLEJA.jpg)
 ![alt text](images/test_images_no_drift.jpg)
 
-Building with drift
+[Building with drift](http://i.imgur.com/tiJ63YB.jpg)
 ![alt text](images/building_drift.jpg)
 
-Building without drift
+[Building without drift](http://i.imgur.com/1anVp5z.jpg)
 ![alt text](images/building_no_drift.jpg)
 
 ## Libraries and Acknowledgments
