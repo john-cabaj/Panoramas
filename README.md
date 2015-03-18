@@ -1,4 +1,4 @@
-# Homogrpahies and Mosaics
+# Homographies and Mosaics
 CS 766 panorama project
 
 ## Introduction
